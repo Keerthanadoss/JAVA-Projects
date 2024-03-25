@@ -43,4 +43,17 @@ public class LoanService {
 		
 	}
 
+	public boolean checkLoanStatus(List<Customer> list1, int customerId) throws CustomerNotFound {
+		for(Customer c:list1) {
+			if(c.getId()==customerId) {
+			if(c.getCreditScore()>650)
+				return true;
+			else
+				return false;
+		}
+		}
+		throw new CustomerNotFound("Invalid Id!!Customer Not found");
+		
+	}
+
 }

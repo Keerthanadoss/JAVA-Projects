@@ -20,7 +20,8 @@ public class LoanController {
 			System.out.println("Press 1: To Get All Loan Details");
 			System.out.println("Press 2: To Get Loan by Id");
 			System.out.println("Press 3: To Apply for Laon");
-			System.out.println("Press 1: ");
+			System.out.println("Press 4: To check loan Status");
+			System.out.println("Press 5: To calculate Interest Amount");
 			System.out.println("Press 0: To exit");
 			int input=sc.nextInt();
 			if(input==0) {
@@ -80,6 +81,37 @@ public class LoanController {
 				} catch (SQLException | CustomerNotFound e) {
 					System.out.println(e.getMessage());
 				}
+				break;
+			case 4:
+				try {
+					System.out.println("Enter the customer Id");
+					int customerId=sc.nextInt();
+					List<Customer> list1 = loanService.fetchAllCustomer();
+					loanService.validateCustomerId(list1,customerId);
+					boolean status=loanService.checkLoanStatus(list1,customerId);
+					if(status==true)
+						System.out.println("Loan Approved");
+					if(status==false)
+						System.out.println("Loan Rejected");
+				} catch (SQLException | CustomerNotFound e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case 5:
+				try {
+					List<Loan> list1 = loanService.fetchAllLoanDetails();
+					System.out.println("Enter the loan Id to calculate Interest Amount");
+					int id=sc.nextInt();
+					sc.nextLine();
+					Loan l=loanService.getLoanById(list,id);
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s", "Loan Id",
+							"Customer Id", "Principal Amount", "Interest Rate", "Loan Term", "Loan Type", "Loan Status"));
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s",l.getId(),l.getCustomerId(),l.getPrincipalAmount(),l.getInterestRate(),l.getLoanTerm(),l.getLoanType(),l.getLoanStatus()));
+				    double interest=loanService.calulateInterest(list1,id);
+				} catch (SQLException | InvalidLoanException e) {
+					System.out.println(e.getMessage());
+				}
+				 
 		}
 	}
 	}
