@@ -68,15 +68,16 @@ public class LoanService {
 		return amount;
 	}
 
-	public double calculateEMI(List<Loan> list1, int id, double interest,int r) {
-		 double emi=0;
+	public double calculateEMI(List<Loan> list1, int id, double interest,int r) throws InvalidLoanException {
 		 for(Loan l:list1) {
-			 r=(l.getInterestRate()/12/100);
+			 r=l.getInterestRate()/12/100;
 				if(l.getId()==id) {
-					emi=((l.getPrincipalAmount()*r*((1+r)^l.getLoanTerm()))/((1+r)^l.getLoanTerm()-1));
+					double i=Math.pow((1+r),l.getLoanTerm());
+					double j=Math.pow((1+r),l.getLoanTerm()-1);
+					 return ((l.getPrincipalAmount()*r*i))/j;
 				}
 				}
-		 return emi;
+		 throw new InvalidLoanException("Loan Id Not Found!!Please enter the correct Loan Id");
 	}
 
 	public double calculateNoOfMonths(List<Loan> list1, double emi,int id) {
