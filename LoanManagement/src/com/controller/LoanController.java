@@ -3,7 +3,6 @@ package com.controller;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-
 import com.exception.CustomerNotFound;
 import com.exception.InvalidLoanException;
 import com.model.Customer;
@@ -22,6 +21,8 @@ public class LoanController {
 			System.out.println("Press 3: To Apply for Laon");
 			System.out.println("Press 4: To check loan Status");
 			System.out.println("Press 5: To calculate Interest Amount");
+			System.out.println("Press 6: To calculate EMI Amount for a Month");
+			System.out.println("Press 7: To Check number of EMI's to be paid");
 			System.out.println("Press 0: To exit");
 			int input=sc.nextInt();
 			if(input==0) {
@@ -103,17 +104,60 @@ public class LoanController {
 					System.out.println("Enter the loan Id to calculate Interest Amount");
 					int id=sc.nextInt();
 					sc.nextLine();
-					Loan l=loanService.getLoanById(list,id);
+					Loan l=loanService.getLoanById(list1,id);
 					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s", "Loan Id",
 							"Customer Id", "Principal Amount", "Interest Rate", "Loan Term", "Loan Type", "Loan Status"));
 					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s",l.getId(),l.getCustomerId(),l.getPrincipalAmount(),l.getInterestRate(),l.getLoanTerm(),l.getLoanType(),l.getLoanStatus()));
-				    double interest=loanService.calulateInterest(list1,id);
+				    int loanTerm=0;
+					double interest=loanService.calulateInterest(list1,id,loanTerm);
+				    System.out.println("Interest amount is: "+interest);
 				} catch (SQLException | InvalidLoanException e) {
 					System.out.println(e.getMessage());
 				}
-				 
+				break;
+			case 6:
+				try {
+					List<Loan> list1 = loanService.fetchAllLoanDetails();
+					System.out.println("Enter the loan Id to calculate Interest Amount");
+					int id=sc.nextInt();
+					sc.nextLine();
+					Loan l=loanService.getLoanById(list1,id);
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s", "Loan Id",
+							"Customer Id", "Principal Amount", "Interest Rate", "Loan Term", "Loan Type", "Loan Status"));
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s",l.getId(),l.getCustomerId(),l.getPrincipalAmount(),l.getInterestRate(),l.getLoanTerm(),l.getLoanType(),l.getLoanStatus()));
+				    int loanTerm=0;
+					double interest=loanService.calulateInterest(list1,id,loanTerm);
+					int monthlyInterestRate=0;
+					double emi=loanService.calculateEMI(list1,id,interest,monthlyInterestRate);
+					System.out.println("The Monthly EMI is: "+emi);
+				} catch (SQLException | InvalidLoanException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case 7:
+				try {
+					List<Loan> list1 = loanService.fetchAllLoanDetails();
+					System.out.println("Enter the loan Id to calculate Interest Amount");
+					int id=sc.nextInt();
+					sc.nextLine();
+					Loan l=loanService.getLoanById(list1,id);
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s", "Loan Id",
+							"Customer Id", "Principal Amount", "Interest Rate", "Loan Term", "Loan Type", "Loan Status"));
+					System.out.println(String.format("%-15s%-15s%-15s%-15s%-15s%-15s%s",l.getId(),l.getCustomerId(),l.getPrincipalAmount(),l.getInterestRate(),l.getLoanTerm(),l.getLoanType(),l.getLoanStatus()));
+				    int loanTerm=0;
+					double interest=loanService.calulateInterest(list1,id,loanTerm);
+					int monthlyInterestRate=0;
+					double emi=loanService.calculateEMI(list1,id,interest,monthlyInterestRate);
+					System.out.println("The Monthly EMI is: "+emi);
+					double noOfMonths=loanService.calculateNoOfMonths(list1,emi,id);
+					System.out.println("No of Months for loan replayment: "+noOfMonths);
+				}catch (SQLException | InvalidLoanException e) {
+					System.out.println(e.getMessage());
+				}
+   				 
 		}
 	}
+		sc.close();
 	}
 }
 

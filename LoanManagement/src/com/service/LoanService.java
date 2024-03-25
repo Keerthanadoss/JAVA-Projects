@@ -56,4 +56,37 @@ public class LoanService {
 		
 	}
 
+	public double calulateInterest(List<Loan> list1, int id,int loanTerm) {
+		double amount=0;
+		for(Loan l:list1) {
+			if(l.getId()==id) {
+				loanTerm=(l.getLoanTerm())/12;
+				amount=(l.getPrincipalAmount()*l.getInterestRate()*loanTerm)/100;
+				
+			}
+		}
+		return amount;
+	}
+
+	public double calculateEMI(List<Loan> list1, int id, double interest,int r) {
+		 double emi=0;
+		 for(Loan l:list1) {
+			 r=(l.getInterestRate()/12/100);
+				if(l.getId()==id) {
+					emi=((l.getPrincipalAmount()*r*((1+r)^l.getLoanTerm()))/((1+r)^l.getLoanTerm()-1));
+				}
+				}
+		 return emi;
+	}
+
+	public double calculateNoOfMonths(List<Loan> list1, double emi,int id) {
+		double month=0;
+		for(Loan l:list1) {
+			if(l.getId()==id) {
+				month=l.getPrincipalAmount()/emi;
+			}		
+	}
+		return month;
+	}
+
 }
